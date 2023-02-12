@@ -7,7 +7,8 @@
 # Ignore files related to API keys
 .env
 
-
+# Database
+*.db
 
 
 
