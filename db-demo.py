@@ -25,3 +25,45 @@ class TSDb:
             result.append({"ID": r[0], "name": r[1]})
         
         return result
+    
+    def get_item(self, id):
+        sql = """
+            SELECT * FROM items
+            WHERE ID = %s
+        """
+        self.cursor.execute(sql % id)
+        return self.cursor.fetchone()
+
+    def add_item(self, item_name):
+        sql = """
+            INSERT INTO items (name)
+            VALUES ('%s') RETURNING *
+        """
+        self.cursor.execute(sql % item_name)
+        new_item = self.cursor.fetchone()
+        self.conn.commit()
+
+        return new_item
+    
+    def update_item(self, id, new_name):
+
+        sql = """
+            UPDATE items
+            SET name = '%s' 
+            WHERE ID = %s
+            RETURNING *
+        """
+        self.cursor.execute(sql % (new_name, id))
+        mod_item = self.cursor.fetchone()
+        self.conn.commit()
+        return mod_item
+
+    def del_item(self, id):
+        sql = """
+            DELETE FROM items
+            WHERE ID = %s RETURNING *
+        """
+        self.cursor.execute(sql % id)
+        del_item = self.cursor.fetchone()
+        self.conn.commit()
+        return del_item
